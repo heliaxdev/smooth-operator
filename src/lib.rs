@@ -52,35 +52,35 @@ impl VisitMut for MutateBinOp {
 
                 match op {
                     syn::BinOp::Add(_) => {
-                        let err = format!("{left_op}+{right_op} caused an overflow");
+                        let err = format!("{left_op} + {right_op} overflowed");
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_add(#right).ok_or(#err)?
                         })
                         .unwrap();
                     }
                     syn::BinOp::Sub(_) => {
-                        let err = format!("{left_op}-{right_op} caused an underflow");
+                        let err = format!("{left_op} - {right_op} underflowed");
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_sub(#right).ok_or(#err)?
                         })
                         .unwrap();
                     }
                     syn::BinOp::Div(_) => {
-                        let err = format!("{left_op}/{right_op} caused an overflow");
+                        let err = format!("{left_op} / {right_op} overflowed or rhs is zero");
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_div(#right).ok_or(#err)?
                         })
                         .unwrap();
                     }
                     syn::BinOp::Mul(_) => {
-                        let err = format!("{left_op}*{right_op} caused an overflow");
+                        let err = format!("{left_op} * {right_op} overflowed");
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_mul(#right).ok_or(#err)?
                         })
                         .unwrap();
                     }
                     syn::BinOp::Rem(_) => {
-                        let err = format!("{left_op}%{right_op} caused an overflow");
+                        let err = format!("{left_op} % {right_op} overflowed or rhs is zero");
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_rem(#right).ok_or(#err)?
                         })
