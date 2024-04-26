@@ -11,6 +11,7 @@ pub fn arithmetic(expression: TokenStream) -> TokenStream {
         (|| -> Result<_, &'static str> {
             Ok(
                 #[allow(clippy::needless_question_mark)]
+                #[allow(unused_parens)]
                 {
                     #result
                 }
