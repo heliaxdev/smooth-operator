@@ -8,7 +8,7 @@ pub fn arithmetic(expression: TokenStream) -> TokenStream {
     let result = arithmetic_inner(expression.into());
 
     quote! {
-        (|| Ok(#result))()
+        (|| -> Result<_, &'static str> {  Ok(#result) })()
     }
     .into()
 }
