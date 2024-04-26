@@ -75,15 +75,13 @@ impl VisitMut for MutateBinOp {
                     _ => {}
                 }
             }
-            syn::Expr::Path(expr) => {
-                self.visit_expr_path_mut(expr);
-            }
             syn::Expr::Unary(expr) => {
                 self.visit_expr_unary_mut(expr);
             }
             syn::Expr::Paren(expr) => {
                 self.visit_expr_paren_mut(expr);
             }
+            syn::Expr::Path(_) | syn::Expr::Lit(_) => {}
             expr => panic!("Expression not allowed: {}", expr.to_token_stream()),
         }
     }
