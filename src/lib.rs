@@ -8,7 +8,14 @@ pub fn arithmetic(expression: TokenStream) -> TokenStream {
     let result = arithmetic_inner(expression.into());
 
     quote! {
-        (|| -> Result<_, &'static str> {  Ok(#result) })()
+        (|| -> Result<_, &'static str> {
+            Ok(
+                #[allow(clippy::needless_question_mark)]
+                {
+                    #result
+                }
+            )
+        })()
     }
     .into()
 }
