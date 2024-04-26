@@ -79,6 +79,13 @@ impl VisitMut for MutateBinOp {
                         })
                         .unwrap();
                     }
+                    syn::BinOp::Rem(_) => {
+                        let err = format!("{left_op}%{right_op} caused an overflow");
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left.checked_rem(#right).ok_or(#err)?
+                        })
+                        .unwrap();
+                    }
                     _ => {}
                 }
             }
