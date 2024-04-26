@@ -88,7 +88,7 @@ impl VisitMut for MutateBinOp {
                         .unwrap();
                     }
                     syn::BinOp::BitXor(_) => {
-                        let err = format!("{left_op} power_of {right_op} overflowed");
+                        let err = format!("{left_op} ^ {right_op} overflowed");
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_pow(#right).ok_or(#err)?
                         })
