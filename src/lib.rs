@@ -93,7 +93,7 @@ impl VisitMut for MutateBinOp {
                         })
                         .unwrap();
                     }
-                    _ => {}
+                    binop => panic!("Binary operator {} not allowed", binop.to_token_stream()),
                 }
             }
             syn::Expr::Unary(expr) => {
