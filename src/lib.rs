@@ -3,6 +3,9 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{quote, ToTokens};
 use syn::visit_mut::VisitMut;
 
+/// Convert arithmetic operators within the given expression to their checked
+/// variants and provide detailed error strings about which operator has failed
+/// for diagnostic.
 #[proc_macro]
 pub fn checked(expression: TokenStream) -> TokenStream {
     let result = checked_inner(expression.into());
