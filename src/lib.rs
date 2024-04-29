@@ -1,3 +1,5 @@
+#![cfg_attr(not(feature = "std"), no_std)]
+
 #[doc(inline)]
 pub use smooth_operator_impl::checked;
 
@@ -14,10 +16,11 @@ pub struct Error {
     pub __op_len: usize,
 }
 
+#[cfg(feature = "std")]
 impl std::error::Error for Error {}
 
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for Error {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let Error {
             expr,
             __op_ix: op_ix,

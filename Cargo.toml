@@ -3,5 +3,9 @@ name = "smooth-operator"
 version = "0.5.0"
 edition = "2021"
 
+[features]
+default = ["std"]
+std = []
+
 [dependencies]
 smooth-operator-impl = { path = "impl" }
