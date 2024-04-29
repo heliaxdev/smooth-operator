@@ -25,13 +25,13 @@ pub fn checked(expression: TokenStream) -> TokenStream {
 fn checked_inner(expression: TokenStream2) -> TokenStream2 {
     let mut expr: syn::Expr =
         syn::parse2(expression).expect("Failed to parse arithmetic expression");
-    MutateBinOp.visit_expr_mut(&mut expr);
+    CheckedArith.visit_expr_mut(&mut expr);
     expr.to_token_stream()
 }
 
-struct MutateBinOp;
+struct CheckedArith;
 
-impl VisitMut for MutateBinOp {
+impl VisitMut for CheckedArith {
     fn visit_expr_mut(&mut self, node: &mut syn::Expr) {
         match node {
             syn::Expr::Binary(syn::ExprBinary {
@@ -97,8 +97,29 @@ impl VisitMut for MutateBinOp {
                     binop => panic!("Binary operator {} not allowed", binop.to_token_stream()),
                 }
             }
-            syn::Expr::Unary(expr) => {
-                self.visit_expr_unary_mut(expr);
+            syn::Expr::Unary(expr_unary) => {
+                let syn::ExprUnary { op, expr, .. } = expr_unary;
+
+                match op {
+                    syn::UnOp::Neg(_) => {
+                        let original_expr: String = expr
+                            .to_token_stream()
+                            .to_string()
+                            .split_ascii_whitespace()
+                            .collect();
+
+                        self.visit_expr_mut(expr);
+
+                        let err = format!("{original_expr} failed");
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #expr.checked_neg().ok_or(#err)?
+                        })
+                        .unwrap();
+                    }
+                    _ => {
+                        self.visit_expr_unary_mut(expr_unary);
+                    }
+                }
             }
             syn::Expr::Paren(expr) => {
                 self.visit_expr_paren_mut(expr);
