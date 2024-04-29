@@ -4,8 +4,8 @@ use quote::{quote, ToTokens};
 use syn::visit_mut::VisitMut;
 
 #[proc_macro]
-pub fn arithmetic(expression: TokenStream) -> TokenStream {
-    let result = arithmetic_inner(expression.into());
+pub fn checked(expression: TokenStream) -> TokenStream {
+    let result = checked_inner(expression.into());
 
     quote! {
         (|| -> Result<_, &'static str> {
@@ -22,7 +22,7 @@ pub fn arithmetic(expression: TokenStream) -> TokenStream {
 }
 
 #[inline]
-fn arithmetic_inner(expression: TokenStream2) -> TokenStream2 {
+fn checked_inner(expression: TokenStream2) -> TokenStream2 {
     let mut expr: syn::Expr =
         syn::parse2(expression).expect("Failed to parse arithmetic expression");
     MutateBinOp.visit_expr_mut(&mut expr);
