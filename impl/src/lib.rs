@@ -92,6 +92,18 @@ impl VisitMut for CheckedArith {
                         })
                         .unwrap();
                     }
+                    syn::BinOp::Shl(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left.checked_shl(#right).ok_or(#err)?
+                        })
+                        .unwrap();
+                    }
+                    syn::BinOp::Shr(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left.checked_shr(#right).ok_or(#err)?
+                        })
+                        .unwrap();
+                    }
                     binop => panic!("Binary operator {} not allowed", binop.to_token_stream()),
                 }
             }
