@@ -4,7 +4,6 @@
 pub use smooth_operator_impl::checked;
 
 /// Checked arithmetics error.
-#[derive(Debug)]
 pub struct Error {
     /// The original expression given to the [`checked`] macro.
     pub expr: &'static str,
@@ -18,6 +17,14 @@ pub struct Error {
 
 #[cfg(feature = "std")]
 impl std::error::Error for Error {}
+
+impl core::fmt::Debug for Error {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("Error")
+            .field("expr", &self.expr)
+            .finish_non_exhaustive()
+    }
+}
 
 impl core::fmt::Display for Error {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
