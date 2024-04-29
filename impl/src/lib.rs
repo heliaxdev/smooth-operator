@@ -104,7 +104,7 @@ impl VisitMut for CheckedArith {
                         })
                         .unwrap();
                     }
-                    binop => panic!("Binary operator {} not allowed", binop.to_token_stream()),
+                    _ => {}
                 }
             }
             syn::Expr::Unary(expr_unary) => {
@@ -140,7 +140,7 @@ impl VisitMut for CheckedArith {
                 self.visit_expr_method_call_mut(expr);
             }
             syn::Expr::Path(_) | syn::Expr::Lit(_) => {}
-            expr => panic!("Expression not allowed: {}", expr.to_token_stream()),
+            _ => {}
         }
     }
 }
