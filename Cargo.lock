@@ -24,6 +24,13 @@ dependencies = [
 name = "smooth-operator"
 version = "0.4.0"
 dependencies = [
+ "smooth-operator-impl",
+]
+
+[[package]]
+name = "smooth-operator-impl"
+version = "0.4.0"
+dependencies = [
  "proc-macro2",
  "quote",
  "syn",
