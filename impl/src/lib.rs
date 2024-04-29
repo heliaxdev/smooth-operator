@@ -37,19 +37,13 @@ struct CheckedArith;
 impl VisitMut for CheckedArith {
     fn visit_expr_mut(&mut self, node: &mut syn::Expr) {
         match node {
-            syn::Expr::Binary(syn::ExprBinary {
-                left, right, op, ..
-            }) => {
-                let left_op: String = left
-                    .to_token_stream()
-                    .to_string()
-                    .split_ascii_whitespace()
-                    .collect();
-                let right_op: String = right
-                    .to_token_stream()
-                    .to_string()
-                    .split_ascii_whitespace()
-                    .collect();
+            syn::Expr::Binary(expr_binary) => {
+                let syn::ExprBinary {
+                    left, right, op, ..
+                } = expr_binary;
+
+                let left_op: String = left.to_token_stream().to_string();
+                let right_op: String = right.to_token_stream().to_string();
 
                 self.visit_expr_mut(left);
                 self.visit_expr_mut(right);
@@ -101,16 +95,12 @@ impl VisitMut for CheckedArith {
                 }
             }
             syn::Expr::Unary(expr_unary) => {
+                let original_expr: String = expr_unary.to_token_stream().to_string();
+
                 let syn::ExprUnary { op, expr, .. } = expr_unary;
 
                 match op {
                     syn::UnOp::Neg(_) => {
-                        let original_expr: String = expr
-                            .to_token_stream()
-                            .to_string()
-                            .split_ascii_whitespace()
-                            .collect();
-
                         self.visit_expr_mut(expr);
 
                         let err = format!("{original_expr} failed");
