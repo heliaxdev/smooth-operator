@@ -11,7 +11,7 @@ pub fn checked(expression: TokenStream) -> TokenStream {
     let result = checked_inner(expression.into());
 
     quote! {
-        (|| -> Result<_, &'static str> {
+        (|| -> std::result::Result<_, String> {
             Ok(
                 #[allow(clippy::needless_question_mark)]
                 #[allow(unused_parens)]
