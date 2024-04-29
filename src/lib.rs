@@ -19,5 +19,8 @@ mod test {
 
         let result = checked!(-i64::MIN).unwrap_err();
         assert_eq!(result, "Failure in:  》-《  i64 :: MIN");
+
+        let result = checked!(u64::MAX << 123).unwrap_err();
+        assert_eq!(result, "Failure in: u64 :: MAX  》<<《  123");
     }
 }

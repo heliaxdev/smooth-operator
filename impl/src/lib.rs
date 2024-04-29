@@ -44,11 +44,19 @@ impl VisitMut for CheckedArith {
                     left, right, op, ..
                 } = expr_binary;
 
-                let left_len: usize = left.to_token_stream().to_string().len();
+                let op_len = op.to_token_stream().to_string().len();
+                let op_ix = {
+                    let left_len = left.to_token_stream().to_string().len();
+
+                    left_len
+                        + 1 // Add 1 for whitespace
+                        + op_len
+                };
 
                 let err = Error {
                     expr: original_expr,
-                    op_ix: left_len + 2, // Add 1 for whitespace and 1 for next char
+                    op_ix,
+                    op_len,
                 }
                 .to_string();
 
@@ -114,6 +122,7 @@ impl VisitMut for CheckedArith {
 
                 let err = Error {
                     expr: original_expr,
+                    op_len: 1,
                     op_ix: 0, // Negation comes first
                 }
                 .to_string();
@@ -152,13 +161,15 @@ struct Error {
     pub expr: String,
     /// Index of the operator that has failed within the `expr`.
     pub op_ix: usize,
+    /// Length of the operator that has failed within the `expr`.
+    pub op_len: usize,
 }
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let Error { expr, op_ix } = self;
-        let (prefix, rest) = expr.split_at(op_ix.checked_sub(1).unwrap_or_default());
-        let (op, suffix) = rest.split_at(1);
+        let Error { expr, op_ix, op_len } = self;
+        let (prefix, rest) = expr.split_at(op_ix.checked_sub(*op_len).unwrap_or_default());
+        let (op, suffix) = rest.split_at(*op_len);
         write!(f, "Failure in: {prefix} 》{op}《 {suffix}")
     }
 }
