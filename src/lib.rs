@@ -4,6 +4,7 @@
 pub use smooth_operator_impl::checked;
 
 /// Checked arithmetics error.
+#[derive(Copy, Clone)]
 pub struct Error {
     /// The original expression given to the [`checked`] macro.
     pub expr: &'static str,
