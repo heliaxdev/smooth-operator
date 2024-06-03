@@ -1,11 +1,7 @@
-[package]
-name = "smooth-operator"
-version = "0.6.0"
-edition = "2021"
+[workspace]
+resolver = "2"
 
-[features]
-default = ["std"]
-std = []
-
-[dependencies]
-smooth-operator-impl = { path = "impl" }
+members = [
+    "smooth-operator",
+    "smooth-operator-impl",
+]

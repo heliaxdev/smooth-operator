@@ -1,0 +1,11 @@
+[package]
+name = "smooth-operator"
+version = "0.6.0"
+edition = "2021"
+
+[features]
+default = ["std"]
+std = []
+
+[dependencies]
+smooth-operator-impl = { path = "../smooth-operator-impl" }
