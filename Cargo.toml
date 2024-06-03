@@ -5,3 +5,11 @@ members = [
     "smooth-operator",
     "smooth-operator-impl",
 ]
+
+[workspace.package]
+authors = ["Heliax AG <hello@heliax.dev>"]
+edition = "2021"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/heliaxdev/smooth-operator"
+version = "0.7.0"
