@@ -79,9 +79,29 @@ impl VisitMut for CheckedArith {
                         })
                         .unwrap();
                     }
+                    syn::BinOp::AddAssign(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left = #left.checked_add(#right).ok_or(Err {
+                                expr: ORIGINAL_EXPR,
+                                __op_ix: #op_ix,
+                                __op_len: #op_len,
+                            })?
+                        })
+                        .unwrap();
+                    }
                     syn::BinOp::Sub(_) => {
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_sub(#right).ok_or(Err {
+                                expr: ORIGINAL_EXPR,
+                                __op_ix: #op_ix,
+                                __op_len: #op_len,
+                            })?
+                        })
+                        .unwrap();
+                    }
+                    syn::BinOp::SubAssign(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left = #left.checked_sub(#right).ok_or(Err {
                                 expr: ORIGINAL_EXPR,
                                 __op_ix: #op_ix,
                                 __op_len: #op_len,
@@ -99,9 +119,29 @@ impl VisitMut for CheckedArith {
                         })
                         .unwrap();
                     }
+                    syn::BinOp::DivAssign(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left = #left.checked_div(#right).ok_or(Err {
+                                expr: ORIGINAL_EXPR,
+                                __op_ix: #op_ix,
+                                __op_len: #op_len,
+                            })?
+                        })
+                        .unwrap();
+                    }
                     syn::BinOp::Mul(_) => {
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_mul(#right).ok_or(Err {
+                                expr: ORIGINAL_EXPR,
+                                __op_ix: #op_ix,
+                                __op_len: #op_len,
+                            })?
+                        })
+                        .unwrap();
+                    }
+                    syn::BinOp::MulAssign(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left = #left.checked_mul(#right).ok_or(Err {
                                 expr: ORIGINAL_EXPR,
                                 __op_ix: #op_ix,
                                 __op_len: #op_len,
@@ -119,9 +159,29 @@ impl VisitMut for CheckedArith {
                         })
                         .unwrap();
                     }
+                    syn::BinOp::RemAssign(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left = #left.checked_rem(#right).ok_or(Err {
+                                expr: ORIGINAL_EXPR,
+                                __op_ix: #op_ix,
+                                __op_len: #op_len,
+                            })?
+                        })
+                        .unwrap();
+                    }
                     syn::BinOp::BitXor(_) => {
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_pow(#right).ok_or(Err {
+                                expr: ORIGINAL_EXPR,
+                                __op_ix: #op_ix,
+                                __op_len: #op_len,
+                            })?
+                        })
+                        .unwrap();
+                    }
+                    syn::BinOp::BitXorAssign(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left = #left.checked_pow(#right).ok_or(Err {
                                 expr: ORIGINAL_EXPR,
                                 __op_ix: #op_ix,
                                 __op_len: #op_len,
@@ -139,9 +199,29 @@ impl VisitMut for CheckedArith {
                         })
                         .unwrap();
                     }
+                    syn::BinOp::ShlAssign(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left = #left.checked_shl(#right).ok_or(Err {
+                                expr: ORIGINAL_EXPR,
+                                __op_ix: #op_ix,
+                                __op_len: #op_len,
+                            })?
+                        })
+                        .unwrap();
+                    }
                     syn::BinOp::Shr(_) => {
                         *node = syn::parse2::<syn::Expr>(quote! {
                             #left.checked_shr(#right).ok_or(Err {
+                                expr: ORIGINAL_EXPR,
+                                __op_ix: #op_ix,
+                                __op_len: #op_len,
+                            })?
+                        })
+                        .unwrap();
+                    }
+                    syn::BinOp::ShrAssign(_) => {
+                        *node = syn::parse2::<syn::Expr>(quote! {
+                            #left = #left.checked_shr(#right).ok_or(Err {
                                 expr: ORIGINAL_EXPR,
                                 __op_ix: #op_ix,
                                 __op_len: #op_len,
@@ -155,18 +235,15 @@ impl VisitMut for CheckedArith {
             syn::Expr::Unary(syn::ExprUnary { op, expr, .. }) => {
                 self.visit_expr_mut(expr);
 
-                match op {
-                    syn::UnOp::Neg(_) => {
-                        *node = syn::parse2::<syn::Expr>(quote! {
-                            #expr.checked_neg().ok_or(Err {
-                                expr: ORIGINAL_EXPR,
-                                __op_len: 1,
-                                __op_ix: 0, // Negation comes first
-                            })?
-                        })
-                        .unwrap();
-                    }
-                    _ => {}
+                if let syn::UnOp::Neg(_) = op {
+                    *node = syn::parse2::<syn::Expr>(quote! {
+                        #expr.checked_neg().ok_or(Err {
+                            expr: ORIGINAL_EXPR,
+                            __op_len: 1,
+                            __op_ix: 0, // Negation comes first
+                        })?
+                    })
+                    .unwrap();
                 }
             }
             syn::Expr::Paren(expr) => {

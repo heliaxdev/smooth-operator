@@ -49,6 +49,10 @@ mod test {
         let result = checked!(1_u64 + 2 + 3).unwrap();
         assert_eq!(result, 6);
 
+        let mut accum = 0i32;
+        checked!(accum += 1i32 + 1 + 1 + 1).unwrap();
+        assert_eq!(accum, 4);
+
         let x = u64::MAX - 1;
         let result = checked!(x + 1 + 1).unwrap_err().to_string();
         assert_eq!(result, "Failure in: x + 1  》+《  1");
